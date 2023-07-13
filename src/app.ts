@@ -2,24 +2,23 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
-import router from './router';
-import { protect, env } from '@/modules';
-import { createNewUser, signin } from '@/handlers';
+import { env } from '@/modules';
+import { apiRouter, authRouter } from '@/routers';
+import { protect } from '@/middleware';
 
 const app = express();
 
-app.use(cors()); // allows only access from the same server
-app.use(morgan('dev')); // logger
-app.use(express.json()); // simplifies parsing json
-app.use(express.urlencoded({ extended: true })); // simplifies parsing query params and strings
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'hello' });
+app.get('/', (_req, res) => {
+  res.status(200).json({ message: 'nothing on the root' });
 });
 
-app.use('/api', protect, router);
-app.post('/user', createNewUser);
-app.post('/signin', signin);
+app.use('/api', protect, apiRouter);
+app.use('/auth', protect, authRouter);
 
 app.listen(env.PORT, () => {
   console.log(`server started at: http://localhost:${env.PORT}`);
