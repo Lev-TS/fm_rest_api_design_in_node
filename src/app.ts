@@ -18,7 +18,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/api', protect, apiRouter);
-app.use('/auth', protect, authRouter);
+app.use('/auth', authRouter);
 
 app.listen(env.PORT, () => {
   console.log(`server started at: http://localhost:${env.PORT}`);
