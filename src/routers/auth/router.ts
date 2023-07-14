@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { signup, signin } from '@/handlers';
+import { signin, signup } from '@/handlers';
 
 const router = Router();
 

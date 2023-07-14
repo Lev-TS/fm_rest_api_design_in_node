@@ -2,24 +2,21 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
-import { env } from '@/modules';
-import { apiRouter, authRouter } from '@/routers';
-import { protect } from '@/middleware';
+import { apiRouter, authRouter, homeRouter } from './routers';
+import { protect } from './handlers';
+import { handleError } from './handlers';
+import { env } from './env/module';
 
-const app = express();
+const app = express().use([
+  cors(),
+  morgan(env.NODE_ENV === 'development' ? 'dev' : 'tiny'),
+  express.json(),
+  express.urlencoded({ extended: true }),
+]);
 
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (_req, res) => {
-  res.status(200).json({ message: 'nothing on the root' });
-});
-
+app.use(homeRouter);
 app.use('/api', protect, apiRouter);
 app.use('/auth', authRouter);
+app.use(handleError);
 
-app.listen(env.PORT, () => {
-  console.log(`server started at: http://localhost:${env.PORT}`);
-});
+export default app;
