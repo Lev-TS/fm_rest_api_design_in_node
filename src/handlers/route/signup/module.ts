@@ -1,34 +1,25 @@
-import { RequestHandler } from 'express';
-import { z } from 'zod';
-
 import { prisma } from '@/services';
-import { createJWT, raiseKnownError, hashPassword } from '@/lib';
+import { createJWT, raiseKnownError, hashPassword, raiseUnknownError } from '@/lib';
 
-export const signup: RequestHandler = async (req, res, next) => {
-  const BodySchema = z.object({
-    username: z.string().min(1),
-    password: z.string().min(6),
-  });
+import { HandleSignUp } from './types';
+import { SignUpReqBodySchema } from './schema';
 
-  const result = BodySchema.safeParse(req.body);
-
-  if (!result.success) {
-    return next(raiseKnownError('INVALID_BODY'));
-  }
-
+export const handleSignUp: HandleSignUp = async (req, res, next) => {
   try {
     const user = await prisma.user.create({
       data: {
-        username: result.data.username,
-        password: await hashPassword(result.data.password),
+        username: req.body.username,
+        password: await hashPassword(req.body.password),
       },
     });
     res.status(200).json({ token: createJWT(user) });
   } catch (error) {
     if (error?.code == 'P2002') {
-      return next(raiseKnownError('INVALID_BODY'));
+      return next(raiseKnownError('USER_EXISTS'));
     }
 
-    next(error);
+    next(raiseUnknownError(error));
   }
 };
+
+export { SignUpReqBodySchema };

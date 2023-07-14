@@ -4,7 +4,7 @@ import { raiseKnownError, verifyJWT } from '@/lib';
 
 import type { ProtectedRouteRequest } from './types';
 
-export const protect: RequestHandler = (req, res, next) => {
+export const protect: RequestHandler = (req, _, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
   if (!token) {

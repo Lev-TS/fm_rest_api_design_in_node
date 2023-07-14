@@ -1,41 +1,30 @@
-import { RequestHandler } from 'express';
-import { z } from 'zod';
-
 import { prisma } from '@/services';
-import { comparePasswords, createJWT } from '@/lib';
+import { comparePasswords, createJWT, raiseKnownError, raiseUnknownError } from '@/lib';
+import { HandleSignIn } from './types';
+import { SignInReqBodySchema } from './schema';
 
-export const signin: RequestHandler = async (req, res, next) => {
-  const BodySchema = z.object({
-    username: z.string().min(1),
-    password: z.string().min(6),
-  });
-
-  const result = BodySchema.safeParse(req.body);
-
-  if (!result.success) {
-    return next({ status: 400, message: 'Invalid request body' });
-  }
-
+export const handleSignIn: HandleSignIn = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        username: result.data.username,
+        username: req.body.username,
       },
     });
 
     if (!user) {
-      return next({ status: 404, message: 'User not found' });
+      return next(raiseKnownError('USER_NOT_FOUND'));
     }
 
     const isValid = await comparePasswords(req.body.password, user.password);
 
     if (!isValid) {
-      next({ status: 401, message: 'Invalid password' });
-      return;
+      return next(raiseKnownError('INVALID_PASSWORD'));
     }
 
     res.status(200).json({ token: createJWT(user) });
   } catch (error) {
-    next({ unknownError: error });
+    next(raiseUnknownError(error));
   }
 };
+
+export { SignInReqBodySchema };
