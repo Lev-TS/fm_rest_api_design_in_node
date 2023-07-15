@@ -5,4 +5,5 @@ export const KNOWN_ERRORS = {
   INVALID_PASSWORD: { status: 401, message: 'Invalid password' },
   USER_NOT_FOUND: { status: 404, message: 'User not found' },
   USER_EXISTS: { status: 409, message: 'This username is already taken' },
+  PRODUCT_NOT_FOUND: { status: 404, message: 'Product not found' },
 } as const;

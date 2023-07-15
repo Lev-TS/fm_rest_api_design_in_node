@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "types": ["./index.d.ts"],
     "sourceMap": true,
     "outDir": "dist",
     "target": "ES5",
     "lib": ["ESNext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": false,
     "forceConsistentCasingInFileNames": true,
@@ -21,7 +22,7 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.ts"],
+  "include": ["**/*.ts"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }

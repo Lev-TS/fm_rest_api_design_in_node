@@ -1,3 +1,12 @@
+import {
+  ProductRequestBodySchema,
+  createProduct,
+  deleteProduct,
+  getOneProduct,
+  getProducts,
+  updateProduct,
+} from '@/handlers';
+import { validateBody } from '@/handlers/validators/body/module';
 import { Router } from 'express';
 
 const router = Router();
@@ -6,13 +15,11 @@ const router = Router();
  * Product
  */
 
-router.get('/product', (req, res) => {
-  res.json({ message: 'hello' });
-});
-router.get('/product:id', () => {});
-router.put('/product:id', () => {});
-router.post('/product', () => {});
-router.delete('/product', () => {});
+router.get('/product', getProducts);
+router.get('/product/:id', getOneProduct);
+router.put('/product/:id', validateBody(ProductRequestBodySchema), updateProduct);
+router.post('/product', validateBody(ProductRequestBodySchema), createProduct);
+router.delete('/product/:id', deleteProduct);
 
 /**
  * Update

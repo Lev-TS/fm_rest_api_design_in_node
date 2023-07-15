@@ -2,8 +2,6 @@ import { type RequestHandler } from 'express';
 
 import { raiseKnownError, verifyJWT } from '@/lib';
 
-import type { ProtectedRouteRequest } from './types';
-
 export const protect: RequestHandler = (req, _, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -19,12 +17,10 @@ export const protect: RequestHandler = (req, _, next) => {
       return next(raiseKnownError('INVALID_TOKEN'));
     }
 
-    (req as ProtectedRouteRequest).user = { id: payload.id, username: payload.username };
+    req.context = { ...req.context, user: { id: payload.id, username: payload.username } };
 
     next();
   } catch (error) {
     next(raiseKnownError('INVALID_TOKEN'));
   }
 };
-
-export { type ProtectedRouteRequest };
