@@ -3,11 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import { apiRouter, authRouter, homeRouter } from './routers';
-import { protect } from './handlers';
 import { handleError } from './handlers';
 import { env } from './env/module';
-import { validateBody } from './handlers/validators/body/module';
-import { z } from 'zod';
+import { protect } from './middleware';
 
 const app = express().use([
   cors(),

@@ -1,3 +1,3 @@
+export * from './auth/module';
 export * from './error/module';
-export * from './middleware';
-export * from './route';
+export * from './product/module';

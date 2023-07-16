@@ -6,7 +6,7 @@ import {
   getProducts,
   updateProduct,
 } from '@/handlers';
-import { validateBody } from '@/handlers/validators/body/module';
+import { validateBody } from '@/validators';
 import { Router } from 'express';
 
 const router = Router();
