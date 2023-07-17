@@ -6,4 +6,5 @@ export const KNOWN_ERRORS = {
   USER_NOT_FOUND: { status: 404, message: 'User not found' },
   USER_EXISTS: { status: 409, message: 'This username is already taken' },
   PRODUCT_NOT_FOUND: { status: 404, message: 'Product not found' },
+  UPDATE_NOT_FOUND: { status: 404, message: 'Update not found' },
 } as const;
