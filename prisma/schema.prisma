@@ -32,7 +32,7 @@ model Product {
 enum UPDATE_STATUS {
   IN_PROGRESS
   SHIPPED
-  DEPRICATED
+  DEPRECATED
 }
 
 model Update {
@@ -40,6 +40,7 @@ model Update {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   title        String
+  body         String
   status       UPDATE_STATUS @default(IN_PROGRESS)
   version      String?
   asset        String?

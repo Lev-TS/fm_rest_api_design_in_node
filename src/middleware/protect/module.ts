@@ -17,7 +17,7 @@ export const protect: RequestHandler = (req, _, next) => {
       return next(raiseKnownError('INVALID_TOKEN'));
     }
 
-    req.context = { ...req.context, user: { id: payload.id, username: payload.username } };
+    req.protectedRouteContext = { ...req.protectedRouteContext, user: { id: payload.id, username: payload.username } };
 
     next();
   } catch (error) {

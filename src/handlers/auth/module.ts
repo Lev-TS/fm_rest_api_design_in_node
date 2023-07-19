@@ -37,10 +37,6 @@ export const handleSignUp = async (req: Request, res: Response, next: NextFuncti
     });
     res.status(200).json({ token: createJWT(user) });
   } catch (error) {
-    if (error?.code == 'P2002') {
-      return next(raiseKnownError('USER_EXISTS'));
-    }
-
     next(raiseUnknownError(error));
   }
 };

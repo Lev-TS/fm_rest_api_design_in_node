@@ -7,12 +7,16 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: req.context.user.id,
+        id: req.protectedRouteContext.user.id,
       },
       include: {
         products: true,
       },
     });
+
+    if (!user) {
+      return next(raiseKnownError('USER_NOT_FOUND'));
+    }
 
     res.status(200).json({ data: user.products });
   } catch (error) {
@@ -23,21 +27,21 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
 export const getOneProduct = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   console.log('here');
   try {
-    const product = await prisma.product.findUniqueOrThrow({
+    const product = await prisma.product.findUnique({
       where: {
         id_belongsToId: {
           id: req.params.id,
-          belongsToId: req.context.user.id,
+          belongsToId: req.protectedRouteContext.user.id,
         },
       },
     });
 
-    res.status(200).json({ data: product });
-  } catch (error) {
-    if (error?.code == 'P2025') {
+    if (!product) {
       return next(raiseKnownError('PRODUCT_NOT_FOUND'));
     }
 
+    res.status(200).json({ data: product });
+  } catch (error) {
     next(raiseUnknownError(error));
   }
 };
@@ -48,7 +52,7 @@ export const updateProduct = async (req: Request<{ id: string }>, res: Response,
       where: {
         id_belongsToId: {
           id: req.params.id,
-          belongsToId: req.context.user.id,
+          belongsToId: req.protectedRouteContext.user.id,
         },
       },
       data: {
@@ -58,9 +62,6 @@ export const updateProduct = async (req: Request<{ id: string }>, res: Response,
 
     res.status(200).json({ data: updateProduct });
   } catch (error) {
-    if (error?.code == 'P2025') {
-      return next(raiseKnownError('PRODUCT_NOT_FOUND'));
-    }
     next(raiseUnknownError(error));
   }
 };
@@ -70,7 +71,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     const newProduct = await prisma.product.create({
       data: {
         name: req.body.name,
-        belongsToId: req.context.user.id,
+        belongsToId: req.protectedRouteContext.user.id,
       },
     });
 
@@ -86,16 +87,13 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
       where: {
         id_belongsToId: {
           id: req.params.id,
-          belongsToId: req.context.user.id,
+          belongsToId: req.protectedRouteContext.user.id,
         },
       },
     });
 
     res.status(200).json({ data: deletedProduct });
   } catch (error) {
-    if (error?.code == 'P2025') {
-      return next(raiseKnownError('PRODUCT_NOT_FOUND'));
-    }
     next(raiseUnknownError(error));
   }
 };
